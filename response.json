@@ -1,0 +1,38 @@
+message": "Top 3 peminjam buku berhasil diambil",
+"data": [
+{
+"member_id": "d4000000-0000-0000-0000-000000000001",
+"full_name": "Budi Santoso",
+"email": "budi.santoso@university.ac.id",
+"member_type": "STUDENT",
+"total loans": 6,
+"last_loan_date": "2026-04-09T17:00:00.000Z",
+"favorite_book": {
+"title": "Laskar Pelangi",
+"times borrowed": 3
+}
+}
+{
+"member_id": "d4000000-0000-0000-0000-000000000002",
+"full_name": "Siti Rahma",
+"email": "siti.rahma@university.ac.id",
+"member_type": "STUDENT",
+"total_loans": 5,
+"last_loan_date": "2026-04-04T17:00:00.000Z",
+"favorite_book": {
+"title": "Atomic Habits",
+"times_borrowed": 2
+}
+}
+{
+"member_id": "d4000000-0000-0000-0000-000000000003",
+"full_name": "Andi Pratama",
+"email": "andi.pratama@university.ac.id",
+"member_type": "STUDENT",
+"total_loans": 4,
+"last_loan_date": "2026-03-31T17:00:00.000Z",
+"favorite_book": {
+"title": "Bumi",
+"times borrowed": 2
+}
+}
