@@ -1,37 +1,34 @@
 import { pool } from '../config/db.js';
 
 export const LoanModel = {
-  async createLoan(book_id, member_id, due_date) {
-    const client = await pool.connect(); // Menggunakan client untuk transaksi
-    try {
-      await client.query('BEGIN'); // Mulai transaksi database
 
-      // 1. Cek ketersediaan buku
+  async createLoan(book_id, member_id, due_date) {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
       const bookCheck = await client.query('SELECT available_copies FROM books WHERE id = $1', [book_id]);
       if (bookCheck.rows[0].available_copies <= 0) {
         throw new Error('Buku sedang tidak tersedia (stok habis).');
       }
 
-      // 2. Kurangi stok buku
       await client.query('UPDATE books SET available_copies = available_copies - 1 WHERE id = $1', [book_id]);
 
-      // 3. Catat transaksi peminjaman
       const loanQuery = `
         INSERT INTO loans (book_id, member_id, due_date) 
         VALUES ($1, $2, $3) RETURNING *
       `;
       const result = await client.query(loanQuery, [book_id, member_id, due_date]);
 
-      await client.query('COMMIT'); // Simpan semua perubahan
+      await client.query('COMMIT');
       return result.rows[0];
     } catch (error) {
-      await client.query('ROLLBACK'); // Batalkan jika ada error
+      await client.query('ROLLBACK');
       throw error;
     } finally {
       client.release();
     }
   },
-
   async getAllLoans() {
     const query = `
       SELECT l.*, b.title as book_title, m.full_name as member_name 
@@ -42,7 +39,6 @@ export const LoanModel = {
     const result = await pool.query(query);
     return result.rows;
   },
-
   async getTopBorrowers() {
     const query = `
       SELECT
@@ -82,5 +78,35 @@ export const LoanModel = {
         "times borrowed": row.times_borrowed ? Number(row.times_borrowed) : 0
       }
     }));
-  }
+  },
+  async getLoanById(id) {
+    const query = `
+      SELECT l.*, b.title as book_title, m.full_name as member_name 
+      FROM loans l
+      JOIN books b ON l.book_id = b.id
+      JOIN members m ON l.member_id = m.id
+      WHERE l.id = $1
+    `;
+    const result = await pool.query(query, [id]);
+    return result.rows[0];
+  },
+  async updateLoan(id, data) {
+    const { due_date, status } = data;
+    const query = `
+      UPDATE loans 
+      SET 
+        due_date = COALESCE($1, due_date),
+        status = COALESCE($2, status)
+      WHERE id = $3 
+      RETURNING *
+    `;
+    const result = await pool.query(query, [due_date, status, id]);
+    return result.rows[0];
+  },
+  async deleteLoan(id) {
+    const query = 'DELETE FROM loans WHERE id = $1 RETURNING *';
+    const result = await pool.query(query, [id]);
+    return result.rowCount > 0;
+  },
+
 };
