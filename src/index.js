@@ -17,6 +17,7 @@ app.use('/api/loans', loanRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/authors', authorRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/reports', bookRoutes);
 
 app.get('/', (req, res) => res.send('Smart Library API is Running...'));
 
