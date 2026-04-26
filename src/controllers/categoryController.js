@@ -1,3 +1,5 @@
+import { CategoryModel } from '../models/categoryModel.js';
+
 export const CategoryController = {
   
   async getCategories(req, res) {

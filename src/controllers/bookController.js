@@ -1,3 +1,5 @@
+import { BookModel } from '../models/bookModel.js';
+
 export const BookController = {
   
   async getAllBooks(req, res) {
