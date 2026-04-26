@@ -4,7 +4,8 @@ export const AuthorController = {
 
   async getAuthors(req, res) {
     try {
-      const authors = await AuthorModel.getAll();
+      const { name } = req.query;
+      const authors = await AuthorModel.getAll(name);
       res.json(authors);
     } catch (err) {
       res.status(500).json({ error: err.message });
@@ -38,13 +39,13 @@ export const AuthorController = {
     try {
       const { id } = req.params;
       const { name, nationality } = req.body;
-      
+
       if (!name && !nationality) {
         return res.status(400).json({ error: 'At least name or nationality is required to update' });
       }
 
       const updatedAuthor = await AuthorModel.update(id, { name, nationality });
-      
+
       if (!updatedAuthor) {
         return res.status(404).json({ error: 'Author not found or no changes made' });
       }
@@ -58,7 +59,7 @@ export const AuthorController = {
     try {
       const { id } = req.params;
       const success = await AuthorModel.delete(id);
-      
+
       if (!success) {
         return res.status(404).json({ error: 'Author not found' });
       }

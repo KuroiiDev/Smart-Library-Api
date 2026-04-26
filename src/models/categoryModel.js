@@ -1,9 +1,15 @@
-import {pool} from '../config/db.js';
+import { pool } from '../config/db.js';
 
 export const CategoryModel = {
-  
-  async getAll() {
-    const result = await pool.query('SELECT * FROM categories ORDER BY name ASC');
+
+  async getAll(name = '') {
+    const query = `
+    SELECT * FROM categories 
+    WHERE name ILIKE $1 
+    ORDER BY name ASC
+  `;
+    const values = [`%${name}%` || '%%'];
+    const result = await pool.query(query, values);
     return result.rows;
   },
   async getById(id) {
