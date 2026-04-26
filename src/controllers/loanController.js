@@ -74,5 +74,18 @@ export const LoanController = {
       res.status(500).json({ error: err.message });
     }
   },
+  async processReturn(req, res) {
+    try {
+      const { id } = req.params;
+      const updatedLoan = await LoanModel.returnBook(id);
+
+      res.json({
+        message: "Buku berhasil dikembalikan dan stok telah diperbarui!",
+        data: updatedLoan
+      });
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
 
 };

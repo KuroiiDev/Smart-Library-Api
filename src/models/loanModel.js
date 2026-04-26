@@ -108,5 +108,46 @@ export const LoanModel = {
     const result = await pool.query(query, [id]);
     return result.rowCount > 0;
   },
+  async returnBook(loanId) {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const loanCheck = await client.query(
+        'SELECT book_id, status FROM loans WHERE id = $1',
+        [loanId]
+      );
+
+      if (loanCheck.rowCount === 0) {
+        throw new Error('Data peminjaman tidak ditemukan.');
+      }
+
+      if (loanCheck.rows[0].status === 'RETURNED') {
+        throw new Error('Buku ini sudah dikembalikan sebelumnya.');
+      }
+
+      const bookId = loanCheck.rows[0].book_id;
+
+      const updateLoanQuery = `
+      UPDATE loans 
+      SET status = 'RETURNED', return_date = NOW() 
+      WHERE id = $1 
+      RETURNING *
+    `;
+      const loanResult = await client.query(updateLoanQuery, [loanId]);
+      await client.query(
+        'UPDATE books SET available_copies = available_copies + 1 WHERE id = $1',
+        [bookId]
+      );
+
+      await client.query('COMMIT');
+      return loanResult.rows[0];
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  },
 
 };

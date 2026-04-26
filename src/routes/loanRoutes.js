@@ -9,5 +9,6 @@ router.get('/:id', LoanController.getLoanById);
 router.post('/', LoanController.createLoan);
 router.put('/:id', LoanController.updateLoan);
 router.delete('/:id', LoanController.deleteLoan);
+router.patch('/:id/return', LoanController.processReturn);
 
 export default router;
