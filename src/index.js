@@ -5,6 +5,7 @@ import loanRoutes from './routes/loanRoutes.js';
 import memberRoutes from './routes/memberRoutes.js'; 
 import authorRoutes from './routes/authorRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import statsRoutes from './routes/statsRoutes.js';
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ app.use('/api/loans', loanRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/authors', authorRoutes);
 app.use('/api/categories', categoryRoutes);
-app.use('/api/reports', bookRoutes);
+app.use('/api/reports', statsRoutes);
 
 app.get('/', (req, res) => res.send('Smart Library API is Running...'));
 
