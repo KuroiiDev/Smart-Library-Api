@@ -1,13 +1,12 @@
 import express from 'express';
-import { LoanController } from '../controllers/loanController.js';
+import { CategoryController } from '../controllers/categoryController.js';
 
 const router = express.Router();
 
-router.get('/', LoanController.getLoans);
-router.get('/top-borrowers', LoanController.getTopBorrowers); // Rute spesifik
-router.get('/:id', LoanController.getLoanById);
-router.post('/', LoanController.createLoan);
-router.put('/:id', LoanController.updateLoan);
-router.delete('/:id', LoanController.deleteLoan);
+router.get('/', CategoryController.getCategories);
+router.get('/:id', CategoryController.getCategoryById);
+router.post('/', CategoryController.addCategory);
+router.put('/:id', CategoryController.updateCategory);
+router.delete('/:id', CategoryController.deleteCategory);
 
 export default router;
